@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Sour UI Tests - All</title>
+	<link rel="stylesheet" type="text/css" href="qunit.css" />
+	<link rel="stylesheet" type="text/css" href="../styles/sour.css" />
+	<script src="../lib/jquery-1.6.2.min.js"></script>
+	<script src="qunit.js"></script>
+	<script src="../javascript/sour.js"></script>
+	<script>
+		$(function() {
+			test("Namespaces", 5, function() {
+				ok(!!Sour, "Top-level namespace is ok.");
+				ok(!!Sour.Util, "Util namespace is ok.");
+				ok(!!Sour.Data, "Data namespace is ok.");
+				ok(!!Sour.Format, "Format namespace is ok.");
+				ok(!!Sour.Form, "Form namespace is ok.");
+			});
+			
+			test("Constants", 1, function() {
+				ok(!!Sour.KeyCode, "KeyCode object is ok.");
+			});
+			
+			test("Prototypal Sugar Functions", 5, function() {
+				equal(typeof Function.prototype.curry, 'function', 'curry is a function.');
+				equal(typeof String.prototype.startsWith, 'function', 'startsWith is a function.');
+				
+				var concat = function(arg1, arg2) { return arg1 + ' ' + arg2; };
+				var curried = concat.curry('foo');
+				equal(curried('bar'), 'foo bar', 'Curried function works.');
+				
+				ok('foobar'.startsWith('foo'), '"foobar" starts with "foo."');
+				ok(!'hello world'.startsWith('foo'), '"hello world" doesn\'t start with "foo."');
+			});
+
+			test("Sour.Util.getOrCreate", 8, function() {
+				var $test1 = $('#test1');
+
+				equal($test1.length, 0, '#test1 doesn\'t exist.');
+
+				Sour.Util.getOrCreate('test1');
+				$test1 = $('#test1');
+
+				equal($test1.length, 1, '#test1 exists.');
+
+				Sour.Util.getOrCreate('test1');
+				$test1 = $('#test1');
+
+				equal($test1.length, 1, '#test1 only exists once.');
+
+				$test1.remove();
+				
+				// Test context-specific
+				var $context = $('<div id="test-context" />').appendTo('body');
+				Sour.Util.getOrCreate('test2', '#test-context');
+				var $test2 = $('#test2', '#test-context');
+
+				equal($test2.length, 1, '#test2 exists within #test-context');
+				
+				$test2.remove();
+				
+				// Test different node types
+				Sour.Util.getOrCreate('test3', 'body', 'span');
+				var $test3 = $('#test3');
+				
+				equal($test3.length, 1, '#test3 exists.');
+				equal($test3[0].nodeName, 'SPAN', '#test3 is a SPAN');
+				
+				$test3.remove();
+				
+				// Test setting default html
+				Sour.Util.getOrCreate('test4', 'body', 'div', 'here <strong>is</strong> some content.');
+				var $test4 = $('#test4');
+				equal($test4.length, 1, '#test4 exists.');
+				equal($test4[0].innerHTML, 'here <strong>is</strong> some content.', '#test4 inner html is correct.');
+				
+				$test4.remove();
+			});
+			
+			test("Sour.Util.parseDate", 9, function() {
+				var dateLocal = '2011-08-15T21:49:22',
+					dateUTC = '2011-08-16T01:49:22Z',
+					dateEastern = '2011-08-15T21:49:22-04:00';
+				
+				var date = Sour.Util.parseDate(dateLocal);
+				ok(!!date, 'Local date is truthy');
+				ok(!!date.getDate, 'Local date appears to be a date.');
+				equal(date.getTime(), 1313459362000, 'Local date parsed to expected time.');
+				
+				date = Sour.Util.parseDate(dateUTC);
+				ok(!!date, 'UTC date is truthy');
+				ok(!!date.getDate, 'UTC date appears to be a date.');
+				equal(date.getTime(), 1313459362000, 'UTC date parsed to expected time.');
+				
+				date = Sour.Util.parseDate(dateEastern);
+				ok(!!date, 'Eastern date is truthy');
+				ok(!!date.getDate, 'Eastern date appears to be a date.');
+				equal(date.getTime(), 1313459362000, 'Eastern date parsed to expected time.');
+			});
+			
+			test("Sour.Util.decodeUrl", 4, function() {
+				var encodedUrl = 'www.domain.com%2Fdir%2Ffile.html%3Ffoo%3Dbar',
+					twiceEncoded = 'www.domain.com%252Fdir%252Ffile.html%253Ffoo%253Dbar',
+					thriceEncoded = 'www.domain.com%25252Fdir%25252Ffile.html%25253Ffoo%25253Dbar',
+					fourthEncoded = 'www.domain.com%2525252Fdir%2525252Ffile.html%2525253Ffoo%2525253Dbar';
+				
+				var decoded = Sour.Util.decodeUrl(encodedUrl);
+				equal(decoded, 'www.domain.com/dir/file.html?foo=bar', 'Decoded URL matches expected string.');
+				decoded = Sour.Util.decodeUrl(twiceEncoded);
+				equal(decoded, 'www.domain.com/dir/file.html?foo=bar', 'Twice decoded URL matches expected string.');
+				decoded = Sour.Util.decodeUrl(thriceEncoded);
+				equal(decoded, 'www.domain.com/dir/file.html?foo=bar', 'Thrice decoded URL matches expected string.');
+				decoded = Sour.Util.decodeUrl(fourthEncoded);
+				equal(decoded, 'www.domain.com%2Fdir%2Ffile.html%3Ffoo%3Dbar', 'Fourth decoded URL matches expected string.');
+			});
+			
+			test("S.Util.positionInArray", 2, function() {
+				var arr = [{ id:12, name:'ab' }, { id:34, name:'cd' }, { id:56, name:'ef' }, { id:78, name:'gh' }];
+				
+				var pos = Sour.Util.positionInArray(34, arr);
+				equal(pos, 1, 'Object is at correct position.');
+				
+				pos = Sour.Util.positionInArray('cd', arr, 'name');
+				equal(pos, 1, 'Object is at correct position (with custom property).');
+			});
+			
+			test("S.Util.objFromArray", 4, function() {
+				var arr = [{ id:12, name:'ab' }, { id:34, name:'cd' }, { id:56, name:'ef' }, { id:78, name:'gh' }];
+				
+				var obj = Sour.Util.objFromArray(34, arr);
+				ok(!!obj, 'Got an object.');
+				equal(obj.name, 'cd', 'Object name is correct.');
+				
+				obj = Sour.Util.objFromArray('cd', arr, 'name');
+				ok(obj, 'Got an object (custom property).');
+				equal(obj.id, 34, 'Object id is correct (custom property).');
+			});
+		});
+	</script>
+</head>
+<body>
+	<h1 id="qunit-header">Sour UI Test Suite</h1>
+	<h2 id="qunit-banner"></h2>
+	<div id="qunit-testrunner-toolbar"></div>
+	<h2 id="qunit-userAgent"></h2>
+	<ol id="qunit-tests"></ol>
+	<div id="qunit-fixture"></div>
+</body>
+</html>
