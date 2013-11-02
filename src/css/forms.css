@@ -1,0 +1,317 @@
+/***********/
+/*  FORMS  */
+/***********/
+/* Controls */
+.form select,
+.form textarea,
+.form input[type="text"],
+.form input[type="password"],
+.form input[type="datetime"],
+.form input[type="datetime-local"],
+.form input[type="date"],
+.form input[type="month"],
+.form input[type="time"],
+.form input[type="week"],
+.form input[type="number"],
+.form input[type="email"],
+.form input[type="url"],
+.form input[type="search"],
+.form input[type="tel"],
+.form input[type="color"] {
+  display: inline-block;
+  padding: 7px;
+  vertical-align: middle;
+  border: 3px solid rgba(0, 0, 0, 0.1);
+  background-color: #fff;
+  font-size: 0.8rem;
+  color: #333333;
+  border-radius: 2px;
+  box-shadow: inset 0 0 3px rgba(0, 0, 0, 0.3);
+}
+
+.form select:focus,
+.form textarea:focus,
+.form input[type="text"]:focus,
+.form input[type="password"]:focus,
+.form input[type="datetime"]:focus,
+.form input[type="datetime-local"]:focus,
+.form input[type="date"]:focus,
+.form input[type="month"]:focus,
+.form input[type="time"]:focus,
+.form input[type="week"]:focus,
+.form input[type="number"]:focus,
+.form input[type="email"]:focus,
+.form input[type="url"]:focus,
+.form input[type="search"]:focus,
+.form input[type="tel"]:focus,
+.form input[type="color"]:focus {
+  border-color: rgba(0, 0, 0, 0.5);
+}
+
+.form select {
+  padding: 6px 7px;
+  height: 2.2rem;
+  line-height: 2.2rem;
+}
+
+/* Sizes */
+.input-tiny {
+  width: 30px;
+}
+
+.input-mini {
+  width: 60px;
+}
+
+.input-small {
+  width: 90px;
+}
+
+.input-medium {
+  width: 150px;
+}
+
+.input-large {
+  width: 210px;
+}
+
+.input-xlarge {
+  width: 270px;
+}
+
+.input-xxlarge {
+  width: 530px;
+}
+
+.input-medium,
+.input-large,
+.input-xlarge,
+.input-xxlarge {
+  max-width: 100%;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+}
+
+/* Placeholder */
+input:-moz-placeholder, .form input:-moz-placeholder,
+textarea:-moz-placeholder, .form textarea:-moz-placeholder {
+  color: #999;
+}
+
+input:-ms-input-placeholder, .form input:-ms-input-placeholder,
+textarea:-ms-input-placeholder, .form textarea:-ms-input-placeholder {
+  color: #999;
+}
+
+input::-webkit-input-placeholder, .form input::-webkit-input-placeholder,
+textarea::-webkit-input-placeholder, .form textarea::-webkit-input-placeholder {
+  color: #999;
+}
+
+/* Help */
+.help-inline, .help-block {
+  color: #333333;
+}
+
+.help-inline {
+  display: inline-block;
+  padding-left: 0.2em;
+  vertical-align: middle;
+  font-size: 0.8rem;
+}
+
+.help-block {
+  display: block;
+  margin: 0.2em 0 0 0.4em;
+  font-size: 0.7rem;
+}
+
+.controls .help-inline, .controls .help-block {
+  opacity: 0.5;
+}
+
+input:focus + .help-inline,
+select:focus + .help-inline,
+textarea:focus + .help-inline,
+.checkbox-label:focus + .help-inline,
+.radio-label:focus + .help-inline,
+.controls:focus .help-inline,
+input:focus + .help-block,
+select:focus + .help-block,
+textarea:focus + .help-block,
+.checkbox-label:focus + .help-block,
+.radio-label:focus + .help-block,
+.help-inline:hover,
+.help-block:hover {
+  opacity: 1.0;
+}
+
+/* Form & Layouts */
+.control-group {
+  margin-bottom: 0.8em;
+  *zoom: 1;
+}
+.control-group:before, .control-group:after {
+  display: table;
+  content: "";
+}
+.control-group:after {
+  clear: both;
+}
+
+.form-label {
+  display: inline-block;
+  margin-bottom: 0.4em;
+  font-size: 0.9rem;
+  font-weight: bold;
+  color: #333333;
+  cursor: pointer;
+  font-family: "proxima-nova", "Helvetica Neue", Helvetica, Arial, Verdana, Sans-serif;
+}
+
+.controls.readonly {
+  padding: 7px;
+}
+
+.checkbox-label, .radio-label {
+  display: block;
+  margin-bottom: 0.8em;
+  padding-left: 20px;
+  font-size: 0.8rem;
+  vertical-align: top;
+  color: #333333;
+}
+
+.checkbox-label.inline, .radio-label.inline {
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.checkbox-label input,
+.radio-label input {
+  float: left;
+  margin-left: -20px;
+}
+
+.form-actions {
+  *zoom: 1;
+  margin-top: 1.2em;
+  font-size: 0.8em;
+}
+.form-actions:before, .form-actions:after {
+  display: table;
+  content: "";
+}
+.form-actions:after {
+  clear: both;
+}
+
+.form-actions .btn {
+  margin-right: 8px;
+}
+
+.form-actions .secondary {
+  vertical-align: middle;
+  font-size: 0.8rem;
+}
+
+.form-actions .right {
+  float: right;
+}
+
+/* Horizontal */
+.form-horizontal .form-label {
+  float: left;
+  padding-top: 0.7rem;
+  width: 160px;
+  text-align: right;
+}
+
+.form-horizontal .controls {
+  margin-left: 180px;
+}
+
+.form-horizontal .radio-label:first-child, .form-horizontal .checkbox-label:first-child,
+.form-horizontal .radio-label.inline, .form-horizontal .checkbox-label.inline {
+  padding-top: 0.85em;
+}
+
+.form-horizontal .form-actions {
+  margin-left: 180px;
+}
+
+.form-horizontal .form-actions.default {
+  margin-left: 0;
+}
+
+/* States */
+.control-group input.disabled,
+.control-group select.disabled,
+.control-group textarea.disabled,
+.control-group input[disabled],
+.control-group select[disabled],
+.control-group textarea[disabled],
+.control-group input[readonly],
+.control-group select[readonly],
+.control-group textarea[readonly] {
+  background-color: #eee;
+  color: #666666;
+  cursor: not-allowed;
+}
+
+.help-inline.required {
+  color: #bd503e;
+}
+
+.control-group.error .form-label,
+.control-group.error .help-inline,
+.control-group.error .help-block {
+  color: #bd503e;
+  opacity: 1.0;
+}
+
+.control-group.error select,
+.control-group.error textarea,
+.control-group.error input[type="text"],
+.control-group.error input[type="password"],
+.control-group.error input[type="datetime"],
+.control-group.error input[type="datetime-local"],
+.control-group.error input[type="date"],
+.control-group.error input[type="month"],
+.control-group.error input[type="time"],
+.control-group.error input[type="week"],
+.control-group.error input[type="number"],
+.control-group.error input[type="email"],
+.control-group.error input[type="url"],
+.control-group.error input[type="search"],
+.control-group.error input[type="tel"],
+.control-group.error input[type="color"] {
+  border-color: rgba(189, 80, 62, 0.75);
+}
+
+.control-group.success label,
+.control-group.success .help-inline,
+.control-group.success .help-block {
+  color: #79a65d;
+  opacity: 1.0;
+}
+
+.control-group.success select,
+.control-group.success textarea,
+.control-group.success input[type="text"],
+.control-group.success input[type="password"],
+.control-group.success input[type="datetime"],
+.control-group.success input[type="datetime-local"],
+.control-group.success input[type="date"],
+.control-group.success input[type="month"],
+.control-group.success input[type="time"],
+.control-group.success input[type="week"],
+.control-group.success input[type="number"],
+.control-group.success input[type="email"],
+.control-group.success input[type="url"],
+.control-group.success input[type="search"],
+.control-group.success input[type="tel"],
+.control-group.success input[type="color"] {
+  border-color: rgba(121, 166, 93, 0.75);
+}

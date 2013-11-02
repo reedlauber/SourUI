@@ -1,0 +1,14 @@
+html, body {
+  background-color: white;
+}
+
+.row {
+  *zoom: 1;
+}
+.row:before, .row:after {
+  display: table;
+  content: "";
+}
+.row:after {
+  clear: both;
+}

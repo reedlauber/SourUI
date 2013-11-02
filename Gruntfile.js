@@ -15,7 +15,11 @@ module.exports = function(grunt) {
 					style: 'expanded'
 				},
 				files: {
-					'<%=dirs.css_src %>/sour.css': ['<%=dirs.sass_src %>/sour.scss']
+					'<%=dirs.css_src %>/base.css': '<%=dirs.sass_src %>/base.scss',
+					'<%=dirs.css_src %>/typography.css': '<%=dirs.sass_src %>/typography.scss',
+					'<%=dirs.css_src %>/grid.css': '<%=dirs.sass_src %>/grid.scss',
+					'<%=dirs.css_src %>/forms.css': '<%=dirs.sass_src %>/forms.scss',
+					'<%=dirs.css_src %>/tables.css': '<%=dirs.sass_src %>/tables.scss'
 				}
 			}
 		},
@@ -25,6 +29,9 @@ module.exports = function(grunt) {
 			},
 			css: {
 				src: [
+					'<%= dirs.css_src %>/normalize.css',
+					'<%= dirs.css_src %>/base.css',
+					'<%= dirs.css_src %>/typography.css',
 					'<%= dirs.css_src %>/*.css'
 				],
 				dest: '<%= dirs.css_dest %>/sour.css'
@@ -85,12 +92,20 @@ module.exports = function(grunt) {
 
 	grunt.registerTask('version', 'Updates the official version number.', function(version) {
 		var pkgPath = 'package.json',
+			bowerPath = 'bower.json',
 			pkg,
-			pkgRaw = '';
+			bwr,
+			pkgRaw = '',
+			bwrRaw = '';
 
 		pkg = grunt.file.readJSON(pkgPath);
 		if(!pkg) {
 			grunt.log.error('Couldn\'t read package file.');
+			return;
+		}
+		bwr = grunt.file.readJSON(bowerPath);
+		if(!bwr) {
+			grunt.log.error('Couldn\'t read bower package file.');
 			return;
 		}
 
@@ -100,10 +115,13 @@ module.exports = function(grunt) {
 		}
 
 		pkg.version = version;
+		bwr.version = version;
 
 		pkgRaw = JSON.stringify(pkg, null, '  ');
+		bwrRaw = JSON.stringify(bwr, null, '  ');
 
 		grunt.file.write(pkgPath, pkgRaw);
+		grunt.file.write(bowerPath, bwrRaw);
 
 		grunt.log.ok('Version set to ' + version);
 	});
