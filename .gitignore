@@ -1,5 +1,2 @@
-
-sourui.tmproj
-*.DS_Store
-/jsdoc/*
 /assets/*
+node_modules
