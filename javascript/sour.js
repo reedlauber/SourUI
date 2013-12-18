@@ -11,6 +11,57 @@
 	sour.noop = function noop() {};
 })(window);
 (function(sour) {
+	function Controller(name, dependencies, constructor) {
+		var self = this;
+		self.name = name;
+		self.dependencies = dependencies;
+		self.constructor = constructor;
+		self.parent = null;
+		self.children = [];
+		self.$elem = null;
+
+		self.set_elem = function($elem) {
+			self.$elem = $elem;
+
+			$elem.parents().each(function() {
+				if($(this).data('sour-ctrl')) {
+					self.parent = $(this).data('sour-ctrl');
+					self.foo = 'bar';
+					self.parent.children.push(self);
+					return false;
+				}
+			});
+
+			$elem.data('sour-ctrl', self);
+
+			self.$elem.emit = function(type, args) {
+				if(self.parent) {
+					$(self.parent).trigger(type + '--emit', args);
+					self.parent.$elem.emit(type, args);
+				}
+			};
+
+			self.$elem.broadcast = function(type, args) {
+				self.children.forEach(function(child) {
+					$(child).trigger(type + '--broadcast', args);
+					child.$elem.broadcast(type, args);
+				});
+			};
+
+			function handler(callback) {
+				return function() {
+					if(typeof callback === 'function') {
+						callback.apply(this, Array.prototype.slice.call(arguments, 1));
+					}
+				};
+			}
+			self.$elem.on = function(type, callback) {
+				$(self).bind(type + '--emit', handler(callback));
+				$(self).bind(type + '--broadcast', handler(callback));
+			};
+		};
+	}
+
 	sour.__controller = function controller(name, config, collection) {
 		if(config) {
 			if(name in collection) {
@@ -18,7 +69,7 @@
 			}
 
 			var dependencies = [],
-				constructor;
+				constructor = sour.noop;
 
 			if(config.forEach) {
 				config.forEach(function(param) {
@@ -33,7 +84,7 @@
 				constructor = config;
 			}
 
-			collection[name] = { name:name, dependencies:dependencies, constructor:constructor };
+			collection[name] = new Controller(name, dependencies, constructor);
 
 			return sour;
 		}
@@ -133,7 +184,7 @@
 		};
 
 		_self.parse = function(selector) {
-			sour.__parse(_self, selector);
+			sour.__parse(selector, _self);
 		};
 
 		var _data_store = {};
@@ -157,27 +208,31 @@
 	};
 })(window.sour);
 (function(sour) {
-	sour.__parse = function parse(module, selector) {
+	sour.__parse = function parse(selector, module) {
 		var $elem = $(selector, module.$elem),
 			$parent = $elem.parent();
 
-		$('[ctrl]', $parent).each(function() {
+		if(!$parent.length) {
+			$parent = $elem;
+		}
+
+		$('[ctrl], [data-ctrl]', $parent).each(function() {
 			var $ctrl = $(this);
 			if(!$ctrl.data('sour-ctrl')) {
-				var ctrlName = $ctrl.attr('ctrl'),
-					ctrl = module.controller(ctrlName);
+				var ctrl_name = $ctrl.attr('ctrl') || $ctrl.attr('data-ctrl'),
+					ctrl = module.controller(ctrl_name);
 
 				if(ctrl) {
-					$ctrl.data('sour-ctrl', ctrl);
+					ctrl.set_elem($ctrl);
 
 					var args = [];
-					ctrl.dependencies.forEach(function(depName) {
-						if(depName === '$elem') {
+					ctrl.dependencies.forEach(function(dep_name) {
+						if(dep_name === '$elem') {
 							args.push($ctrl);
-						} else if(depName === 'module') { 
+						} else if(dep_name === 'module') { 
 							args.push(module);
 						} else {
-							args.push(module.dependency(depName));
+							args.push(module.dependency(dep_name));
 						}
 					});
 

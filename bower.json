@@ -1,17 +1,22 @@
 {
   "name": "sour-ui",
-  "version": "2.1.1",
-  "main": "path/to/main.css",
+  "version": "2.2.1",
+  "main": [
+    "./javascript/sour.js",
+    "./css/sour.css"
+  ],
   "ignore": [
     "**/.*",
     "node_modules",
     "bower_components",
-    "test",
-    "tests"
+    "src/javascript/tests"
   ],
   "homepage": "https://github.com/reedlauber/SourUI",
   "authors": [
     "Reed Lauber <reedlauber@gmail.com>"
   ],
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "jquery": "~2.0.3"
+  }
 }

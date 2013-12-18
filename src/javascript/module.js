@@ -90,7 +90,7 @@
 		};
 
 		_self.parse = function(selector) {
-			sour.__parse(_self, selector);
+			sour.__parse(selector, _self);
 		};
 
 		var _data_store = {};
