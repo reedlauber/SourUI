@@ -34,17 +34,17 @@
 
 			$elem.data('sour-ctrl', self);
 
-			self.$elem.emit = function(type, args) {
+			self.$elem.$emit = function(type, args) {
 				if(self.parent) {
-					$(self.parent).trigger(type + '--emit', args);
-					self.parent.$elem.emit(type, args);
+					$(self.parent).trigger(type, args);
+					self.parent.$elem.$emit(type, args);
 				}
 			};
 
-			self.$elem.broadcast = function(type, args) {
+			self.$elem.$broadcast = function(type, args) {
 				self.children.forEach(function(child) {
-					$(child).trigger(type + '--broadcast', args);
-					child.$elem.broadcast(type, args);
+					$(child).trigger(type, args);
+					child.$elem.$broadcast(type, args);
 				});
 			};
 
@@ -55,9 +55,9 @@
 					}
 				};
 			}
-			self.$elem.on = function(type, callback) {
-				$(self).bind(type + '--emit', handler(callback));
-				$(self).bind(type + '--broadcast', handler(callback));
+			self.$elem.$on = function(type, callback) {
+				$(self).bind(type, handler(callback));
+				$(self).bind(type, handler(callback));
 			};
 		};
 	}

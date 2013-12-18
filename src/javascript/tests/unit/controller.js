@@ -46,7 +46,7 @@ $(function() {
 			a1, a2;
 
 		test_module.controller('test-emit-ctrl-parent', ['$elem', function($elem) {
-			$elem.on('test-event', function(a, b) {
+			$elem.$on('test-event', function(a, b) {
 				emitted_parent = true;
 				a1 = a;
 				a2 = b;
@@ -54,13 +54,13 @@ $(function() {
 		}]);
 
 		test_module.controller('test-emit-ctrl-child', ['$elem', function($elem) {
-			$elem.on('test-event', function() {
+			$elem.$on('test-event', function() {
 				emitted_middle = true;
 			});
 		}]);
 
 		test_module.controller('test-emit-ctrl-child-child', ['$elem', function($elem) {
-			$elem.emit('test-event', [4, 6]);
+			$elem.$emit('test-event', [4, 6]);
 		}]);
 
 		var $div = $('<div />'),
@@ -84,18 +84,18 @@ $(function() {
 
 		test_module.controller('test-broadcast-ctrl-parent', ['$elem', function($elem) {
 			on_parse_complete = function() {
-				$elem.broadcast('test-event', [3, 5]);
+				$elem.$broadcast('test-event', [3, 5]);
 			};
 		}]);
 
 		test_module.controller('test-broadcast-ctrl-child', ['$elem', function($elem) {
-			$elem.on('test-event', function() {
+			$elem.$on('test-event', function() {
 				broadcasted_middle = true;
 			});
 		}]);
 
 		test_module.controller('test-broadcast-ctrl-child-child', ['$elem', function($elem) {
-			$elem.on('test-event', function(a, b) {
+			$elem.$on('test-event', function(a, b) {
 				broadcasted_bottom = true;
 				a1 = a;
 				a2 = b;
