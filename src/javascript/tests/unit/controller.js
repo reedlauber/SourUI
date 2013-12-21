@@ -77,8 +77,8 @@ $(function() {
 	});
 
 	test('should broadcast down node tree', function() {
-		var broadcasted_bottom = false, 
-			broadcasted_middle = false,
+		var broadcasted_bottom = 0, 
+			broadcasted_middle = 0,
 			a1, a2,
 			on_parse_complete;
 
@@ -90,13 +90,13 @@ $(function() {
 
 		test_module.controller('test-broadcast-ctrl-child', ['$elem', function($elem) {
 			$elem.$on('test-event', function() {
-				broadcasted_middle = true;
+				broadcasted_middle++;
 			});
 		}]);
 
 		test_module.controller('test-broadcast-ctrl-child-child', ['$elem', function($elem) {
 			$elem.$on('test-event', function(a, b) {
-				broadcasted_bottom = true;
+				broadcasted_bottom++;
 				a1 = a;
 				a2 = b;
 			});
@@ -112,8 +112,8 @@ $(function() {
 		// Have to defer broadcast, because it will run before child controller have a chance to be created.
 		on_parse_complete();
 
-		ok(broadcasted_middle, 'middle controller got broadcasted event');
-		ok(broadcasted_bottom, 'bottom controller got broadcasted event');
+		equal(broadcasted_middle, 1, 'middle controller got broadcasted event only once');
+		equal(broadcasted_bottom, 1, 'bottom controller got broadcasted event');
 		equal(a1, 3, 'first argument as expected');
 		equal(a2, 5, 'second argument as expected');
 	});

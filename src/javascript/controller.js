@@ -8,14 +8,17 @@
 		self.children = [];
 		self.$elem = null;
 
+		self.set_child = function(child) {
+			child.parent = self;
+			self.children.push(child);
+		};
+
 		self.set_elem = function($elem) {
 			self.$elem = $elem;
 
 			$elem.parents().each(function() {
 				if($(this).data('sour-ctrl')) {
-					self.parent = $(this).data('sour-ctrl');
-					self.foo = 'bar';
-					self.parent.children.push(self);
+					$(this).data('sour-ctrl').set_child(self);
 					return false;
 				}
 			});
@@ -45,7 +48,6 @@
 			}
 			self.$elem.$on = function(type, callback) {
 				$(self).bind(type, handler(callback));
-				$(self).bind(type, handler(callback));
 			};
 		};
 	}
@@ -72,11 +74,14 @@
 				constructor = config;
 			}
 
-			collection[name] = new Controller(name, dependencies, constructor);
+			collection[name] = { name:name, dependencies:dependencies, constructor:constructor };
 
 			return sour;
 		}
 
-		return collection[name];
+		if(collection[name]) {
+			var def = collection[name];
+			return new Controller(def.name, def.dependencies, def.constructor);
+		}
 	};
 })(window.sour);

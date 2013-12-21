@@ -77,7 +77,7 @@
 				sour.__controller(name, dependencies, _controllers);
 				return _self;	
 			} else {
-				return _controllers[name];
+				return sour.__controller(name, null, _controllers);
 			}
 		};
 
