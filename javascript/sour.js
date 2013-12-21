@@ -20,14 +20,17 @@
 		self.children = [];
 		self.$elem = null;
 
+		self.set_child = function(child) {
+			child.parent = self;
+			self.children.push(child);
+		};
+
 		self.set_elem = function($elem) {
 			self.$elem = $elem;
 
 			$elem.parents().each(function() {
 				if($(this).data('sour-ctrl')) {
-					self.parent = $(this).data('sour-ctrl');
-					self.foo = 'bar';
-					self.parent.children.push(self);
+					$(this).data('sour-ctrl').set_child(self);
 					return false;
 				}
 			});
@@ -57,7 +60,6 @@
 			}
 			self.$elem.$on = function(type, callback) {
 				$(self).bind(type, handler(callback));
-				$(self).bind(type, handler(callback));
 			};
 		};
 	}
@@ -84,12 +86,15 @@
 				constructor = config;
 			}
 
-			collection[name] = new Controller(name, dependencies, constructor);
+			collection[name] = { name:name, dependencies:dependencies, constructor:constructor };
 
 			return sour;
 		}
 
-		return collection[name];
+		if(collection[name]) {
+			var def = collection[name];
+			return new Controller(def.name, def.dependencies, def.constructor);
+		}
 	};
 })(window.sour);
 (function(sour) {
@@ -171,7 +176,7 @@
 				sour.__controller(name, dependencies, _controllers);
 				return _self;	
 			} else {
-				return _controllers[name];
+				return sour.__controller(name, null, _controllers);
 			}
 		};
 
@@ -209,14 +214,14 @@
 })(window.sour);
 (function(sour) {
 	sour.__parse = function parse(selector, module) {
-		var $elem = $(selector, module.$elem),
-			$parent = $elem.parent();
+		var $elem = $(selector, module.$elem);
 
-		if(!$parent.length) {
-			$parent = $elem;
+		var $ctrls = $('[ctrl], [data-ctrl]', $elem);
+		if($elem.attr('ctrl') || $elem.attr('data-ctrl')) {
+			$ctrls.add($elem);
 		}
 
-		$('[ctrl], [data-ctrl]', $parent).each(function() {
+		$ctrls.each(function() {
 			var $ctrl = $(this);
 			if(!$ctrl.data('sour-ctrl')) {
 				var ctrl_name = $ctrl.attr('ctrl') || $ctrl.attr('data-ctrl'),
